@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES Game</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e91e63;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #e91e63;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #c2185b;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .meaning {
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1> FLAMES Game </h1>
+
+        <input type="text" id="name1" placeholder="Enter first name">
+
+        <input type="text" id="name2" placeholder="Enter second name">
+
+        <br>
+
+        <button onclick="playFlames()">Check Relationship</button>
+
+        <div id="result"></div>
+        <div class="meaning"></div>
+    </div>
+
+    <script>
+
+        function playFlames() {
+
+            let name1 = document
+                .getElementById("name1")
+                .value
+                .toLowerCase()
+                .replace(/\s/g, "");
+
+            let name2 = document
+                .getElementById("name2")
+                .value
+                .toLowerCase()
+                .replace(/\s/g, "");
+
+            if (name1 === "" || name2 === "") {
+                alert("Please enter both names.");
+                return;
+            }
+
+            let arr1 = name1.split("");
+            let arr2 = name2.split("");
+
+            for (let i = 0; i < arr1.length; i++) {
+
+                let index = arr2.indexOf(arr1[i]);
+
+                if (index !== -1) {
+                    arr1[i] = "";
+                    arr2[index] = "";
+                }
+            }
+
+            let count =
+                arr1.join("").length +
+                arr2.join("").length;
+
+            let flames = ["F", "L", "A", "M", "E", "S"];
+
+            while (flames.length > 1) {
+
+                let index = (count % flames.length) - 1;
+
+                if (index >= 0) {
+                    flames = flames
+                        .slice(index + 1)
+                        .concat(flames.slice(0, index));
+                } else {
+                    flames.pop();
+                }
+            }
+
+            let result = flames[0];
+
+            let meanings = {
+                F: "Friends 🤝",
+                L: "Love ❤️",
+                A: "Affection 😊",
+                M: "Marriage 💍",
+                E: "Enemies 😡",
+                S: "Siblings 👨‍👩‍👧"
+            };
+
+            document.getElementById("result").innerHTML =
+                meanings[result];
+
+            document.querySelector(".meaning").innerHTML =
+                "FLAMES Result: " + result;
+        }
+
+    </script>
+
+</body>
+</html>
