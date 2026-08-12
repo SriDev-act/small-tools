@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notepad</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 22px;
+        }
+
+        #status {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            border: none;
+            padding: 9px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #222;
+            color: white;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .container {
+            padding: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100vh - 135px);
+            resize: none;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+            outline: none;
+            background: white;
+        }
+
+        textarea:focus {
+            border-color: #555;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 18px;
+            }
+
+            .toolbar {
+                flex-wrap: wrap;
+            }
+
+            textarea {
+                height: calc(100vh - 180px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Notepad</h1>
+        <span id="status">Saved</span>
+    </header>
+
+    <div class="toolbar">
+        <button onclick="newNote()">New</button>
+        <button onclick="saveNote()">Save</button>
+        <button onclick="clearNote()">Clear</button>
+        <button onclick="downloadNote()">Download</button>
+    </div>
+
+    <div class="container">
+        <textarea
+            id="notepad"
+            placeholder="Start typing your note..."
+            spellcheck="true"></textarea>
+    </div>
+
+    <script>
+        const notepad = document.getElementById("notepad");
+        const status = document.getElementById("status");
+
+        // Load saved note when page opens
+        window.onload = function () {
+            const savedNote = localStorage.getItem("smallToolsNote");
+
+            if (savedNote !== null) {
+                notepad.value = savedNote;
+                status.textContent = "Saved";
+            } else {
+                status.textContent = "New note";
+            }
+        };
+
+        // Automatically save while typing
+        notepad.addEventListener("input", function () {
+            localStorage.setItem("smallToolsNote", notepad.value);
+
+            status.textContent = "Saving...";
+
+            setTimeout(function () {
+                status.textContent = "Saved";
+            }, 300);
+        });
+
+        // Manual save
+        function saveNote() {
+            localStorage.setItem("smallToolsNote", notepad.value);
+            status.textContent = "Saved";
+        }
+
+        // New note
+        function newNote() {
+            if (confirm("Create a new note? Current note will be cleared.")) {
+                notepad.value = "";
+                localStorage.removeItem("smallToolsNote");
+                status.textContent = "New note";
+            }
+        }
+
+        // Clear note
+        function clearNote() {
+            if (confirm("Are you sure you want to clear this note?")) {
+                notepad.value = "";
+                localStorage.removeItem("smallToolsNote");
+                status.textContent = "Cleared";
+            }
+        }
+
+        // Download note as TXT
+        function downloadNote() {
+            const text = notepad.value;
+
+            if (text.trim() === "") {
+                alert("Nothing to download.");
+                return;
+            }
+
+            const blob = new Blob([text], {
+                type: "text/plain"
+            });
+
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "my-note.txt";
+
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+</html>
