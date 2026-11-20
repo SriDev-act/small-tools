@@ -42,3 +42,7 @@ Small-Tools/
     ├── qr-code-generator
     ├── password-generator
     └── flames
+
+
+Website link:
+https://sridev-act.github.io/small-tools
